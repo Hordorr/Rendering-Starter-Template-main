@@ -8,13 +8,11 @@ int main()
     auto const triangle_mesh = gl::Mesh{{
         .vertex_buffers = {{
             .layout = {gl::VertexAttribute::Position2D{0}},
-            .data = {
-                -.5f,+.5f,
+            .data = {                
                 -.5f,-.5f,
-                +.5f,+.5f,
                 +.5f,-.5f,
                 +.5f,+.5f,
-                -.5f,-.5f                
+                -.5f,+.5f,                            
             },
         
 
