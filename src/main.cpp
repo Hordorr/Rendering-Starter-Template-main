@@ -5,6 +5,7 @@ int main()
     // Initialisation
     gl::init("TPs de Rendering"); // On crée une fenêtre et on choisit son nom
     gl::maximize_window(); // On peut la maximiser si on veut
+    
     auto const triangle_mesh = gl::Mesh{{
         .vertex_buffers = {{
             .layout = {gl::VertexAttribute::Position2D{0}},
@@ -22,11 +23,19 @@ int main()
             0,2,3
         },
     }};
+
+    auto const shader = gl::Shader{{
+    .vertex   = gl::ShaderSource::File{"res/vertex.glsl"},
+    .fragment = gl::ShaderSource::File{"res/fragment.glsl"},
+    }};
+    
+    
+
     while (gl::window_is_open())
     {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.f,0.f,1.f,1.f);        
-        gl::bind_default_shader();
+        shader.bind();
         triangle_mesh.draw();
         
         
