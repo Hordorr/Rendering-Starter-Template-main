@@ -9,9 +9,12 @@ int main()
         .vertex_buffers = {{
             .layout = {gl::VertexAttribute::Position2D{0}},
             .data = {
-                -1.f,-1.f,
-                +1.f,-1.f,
-                0.f,+1.f
+                -.5f,+.5f,
+                -.5f,-.5f,
+                +.5f,+.5f,
+                +.5f,-.5f,
+                +.5f,+.5f,
+                -.5f,-.5f                
             },
         
 
