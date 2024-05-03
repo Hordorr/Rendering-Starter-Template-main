@@ -19,8 +19,13 @@ int main()
     }};
     while (gl::window_is_open())
     {
-        glClearColor(0.f,0.f,1.f,1.f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0.f,0.f,1.f,1.f);        
+        gl::bind_default_shader();
+        triangle_mesh.draw();
+        
+        
+        
         // Rendu à chaque frame
     }
 }
