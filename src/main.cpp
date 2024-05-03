@@ -31,20 +31,20 @@ int main()
         },
     }};
 
-    auto const opacityMask_mesh = gl::Mesh{{
+    auto const triDim_mesh = gl::Mesh{{
         .vertex_buffers = {{
-            .layout = {gl::VertexAttribute::Position2D{0}},
+            .layout = {gl::VertexAttribute::Position3D{0}},
             .data = {                
-                -1.f,-1.f,
-                +1.f,-1.f,
-                +1.f,+1.f,
-                -1.f,+1.f,                            
+                -1.f,-1.f,0.f,
+                +1.f,-1.f,1.f,
+                +1.f,+1.f,0.f,
+                -1.f,+1.f,1.f                         
             },
         
 
         }},
         .index_buffer = {
-            0,1,2,
+            0,2,1,
             0,2,3
         },
     }};
@@ -71,7 +71,7 @@ int main()
     {
         glClear(GL_COLOR_BUFFER_BIT);
         glm::mat4 const view_matrix = camera.view_matrix();
-        glm::mat4 const projection_matrix = glm::infinitePerspective(.5f,gl::framebuffer_aspect_ratio(),0.001f);
+        glm::mat4 const projection_matrix = glm::ortho(-2.f,2.f,-1.5f,1.5f,0.01f,100.f);
         glm::mat4 const view_projection_matrix = projection_matrix * view_matrix;
         
         
@@ -79,7 +79,7 @@ int main()
         shader.bind();
         shader.set_uniform("view_projection_matrix",view_projection_matrix);
         shader.set_uniform("alpha",1.f);        
-        rectlangle_mesh.draw();
+        triDim_mesh.draw();
         
         
         
