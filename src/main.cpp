@@ -19,6 +19,10 @@ int main()
         
 
         }},
+        .index_buffer = {
+            0,1,2,
+            0,2,3
+        },
     }};
     while (gl::window_is_open())
     {
