@@ -1,11 +1,15 @@
 #include "opengl-framework/opengl-framework.hpp" // Inclue la librairie qui va nous servir à faire du rendu
 
+
+
 int main()
 {
     // Initialisation
     gl::init("TPs de Rendering"); // On crée une fenêtre et on choisit son nom
     gl::maximize_window(); // On peut la maximiser si on veut
     
+    
+
     auto const triangle_mesh = gl::Mesh{{
         .vertex_buffers = {{
             .layout = {gl::VertexAttribute::Position2D{0}},
@@ -25,8 +29,10 @@ int main()
     }};
 
     auto const shader = gl::Shader{{
+    
     .vertex   = gl::ShaderSource::File{"res/vertex.glsl"},
-    .fragment = gl::ShaderSource::File{"res/fragment.glsl"},
+    .fragment = gl::ShaderSource::File{"res/fragment.glsl"}
+    
     }};
     
     
@@ -36,6 +42,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.f,0.f,1.f,1.f);        
         shader.bind();
+        shader.set_uniform("currentTime",gl::framebuffer_aspect_ratio()),
+        
         triangle_mesh.draw();
         
         
