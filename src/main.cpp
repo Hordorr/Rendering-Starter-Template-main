@@ -8,6 +8,7 @@ int main()
     
     gl::init("TPs de Rendering"); // On crée une fenêtre et on choisit son nom
     gl::maximize_window(); // On peut la maximiser si on veut
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE); // On peut configurer l'équation qui mélange deux couleurs, comme pour faire différents blend mode dans Photoshop. Cette équation-ci donne le blending "normal" entre pixels transparents.
     auto camera = gl::Camera{};
@@ -95,7 +96,7 @@ int main()
 
     while (gl::window_is_open())
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glm::mat4 const view_matrix = camera.view_matrix();
         glm::mat4 const projection_matrix = glm::infinitePerspective(.5f,gl::framebuffer_aspect_ratio(),0.001f);
         glm::mat4 const view_projection_matrix = projection_matrix * view_matrix;
