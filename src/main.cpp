@@ -34,16 +34,17 @@ int main()
 
     auto const triDim_mesh = gl::Mesh{{
         .vertex_buffers = {{
-            .layout = {gl::VertexAttribute::Position3D{0}},
+            .layout = {gl::VertexAttribute::Position3D{0},gl::VertexAttribute::UV{1}},
+            
             .data = {
-               -1.f,1.f,1.f,
-               -1.f,-1.f,1.f,
-               1.f,-1.f,1.f,
-               1.f,1.f,1.f,
-               -1.f,1.f,-1.f,
-               -1.f,-1.f,-1.f,
-               1.f,-1.f,-1.f,
-               1.f,1.f,-1.f,
+               -1.f,1.f,1.f,0.f,0.f,
+               -1.f,-1.f,1.f,1.f,0.f,
+               1.f,-1.f,1.f,1.f,1.f,
+               1.f,1.f,1.f,0.f,1.f,
+               -1.f,1.f,-1.f,0.f,1.f,
+               -1.f,-1.f,-1.f,1.f,1.f,
+               1.f,-1.f,-1.f,1.f,0.f,
+               1.f,1.f,-1.f,0.f,0.f,
                 
 
                 
@@ -74,6 +75,7 @@ int main()
 
 
         },
+        
     }};
 
 
@@ -92,6 +94,19 @@ int main()
     
     }};
     
+    auto const texture = gl::Texture{
+    gl::TextureSource::File{ // Peut être un fichier, ou directement un tableau de pixels
+        .path           = "res/texture.png",
+        .flip_y         = true, // Il n'y a pas de convention universelle sur la direction de l'axe Y. Les fichiers (.png, .jpeg) utilisent souvent une direction différente de celle attendue par OpenGL. Ce booléen flip_y est là pour inverser la texture si jamais elle n'apparaît pas dans le bon sens.
+        .texture_format = gl::InternalFormat::RGBA8, // Format dans lequel la texture sera stockée. On pourrait par exemple utiliser RGBA16 si on voulait 16 bits par canal de couleur au lieu de 8. (Mais ça ne sert à rien dans notre cas car notre fichier ne contient que 8 bits par canal, donc on ne gagnerait pas de précision). On pourrait aussi stocker en RGB8 si on ne voulait pas de canal alpha. On utilise aussi parfois des textures avec un seul canal (R8) pour des usages spécifiques.
+    },
+    gl::TextureOptions{
+        .minification_filter  = gl::Filter::Linear, // Comment on va moyenner les pixels quand on voit l'image de loin ?
+        .magnification_filter = gl::Filter::Linear, // Comment on va interpoler entre les pixels quand on zoom dans l'image ?
+        .wrap_x               = gl::Wrap::Repeat,   // Quelle couleur va-t-on lire si jamais on essaye de lire en dehors de la texture ?
+        .wrap_y               = gl::Wrap::Repeat,   // Idem, mais sur l'axe Y. En général on met le même wrap mode sur les deux axes.
+    }
+};
     
 
     while (gl::window_is_open())
@@ -108,6 +123,7 @@ int main()
 
         glClearColor(0.f,0.f,1.f,1.f);
         shader.bind();
+        
         shader.set_uniform("view_projection_matrix",model_view_projection_matrix);
         shader.set_uniform("alpha",1.f);        
         triDim_mesh.draw();
