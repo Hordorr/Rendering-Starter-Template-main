@@ -123,7 +123,7 @@ int main()
 
         glClearColor(0.f,0.f,1.f,1.f);
         shader.bind();
-        
+        shader.set_uniform("my_texture",texture);
         shader.set_uniform("view_projection_matrix",model_view_projection_matrix);
         shader.set_uniform("alpha",1.f);        
         triDim_mesh.draw();
