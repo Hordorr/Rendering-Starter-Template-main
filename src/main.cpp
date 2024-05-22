@@ -80,7 +80,7 @@ int main()
         shader.set_uniform("view_projection_matrix",view_projection_matrix);
         shader.set_uniform("alpha",1.f);        
         triDim_mesh.draw();
-        
+        //CamOrtho
         
         
         
