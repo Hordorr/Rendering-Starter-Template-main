@@ -71,7 +71,7 @@ int main()
         //glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.f,0.f,1.f,1.f);        
         shaderOpacity.bind();
-        shaderOpacity.set_uniform("alpha",.1f); 
+        shaderOpacity.set_uniform("alpha",.05f); 
         opacityMask_mesh.draw();
         shader.bind();
         shader.set_uniform("currentTime",gl::time_in_seconds()),
