@@ -10,6 +10,8 @@ void main()
 {    
     //out_color = vec4(uv.x,uv.y,0.f,1.f);
     vec4 texture_color = texture2D(my_texture,uv);
+    float val = (texture_color.x+texture_color.y+texture_color.z)/3;
+    vec4 bawTexColor = vec4(val,val,val,1);
     vec4 redtex = texture_color * vec4(1,0,0,1);
-    out_color = vec4(redtex);
+    out_color = vec4(bawTexColor);
 }
