@@ -33,6 +33,26 @@ int main()
         },
     }};
 
+    auto const screen_mesh = gl::Mesh{{
+        .vertex_buffers = {{
+            .layout = {gl::VertexAttribute::Position2D{0},gl::VertexAttribute::UV{1}},
+            .data = {                
+                -1.f,-1.f,0.f,0.f,
+                -1.f,1.f,0.f,1.f,
+                1.f,-1.f,1.f,0.f,
+                1.f,1.f,1.f,1.f                             
+            },
+        
+
+        }},
+        .index_buffer = {
+            0,1,3,
+            0,2,3
+        },
+    }};
+
+
+
     auto const triDim_mesh = gl::Mesh{{
         .vertex_buffers = {{
             .layout = {gl::VertexAttribute::Position3D{0},gl::VertexAttribute::UV{1}},
@@ -90,9 +110,14 @@ int main()
 
     auto const shaderOpacity = gl::Shader{{
     
-    .vertex   = gl::ShaderSource::File{"res/vertexOpacity.glsl"},
-    .fragment = gl::ShaderSource::File{"res/fragmentOpacity.glsl"}
+        .vertex   = gl::ShaderSource::File{"res/vertexOpacity.glsl"},
+        .fragment = gl::ShaderSource::File{"res/fragmentOpacity.glsl"}
     
+    }};
+
+    auto const shaderScreen = gl::Shader{{
+        .vertex   = gl::ShaderSource::File{"res/vertexScreenShader.glsl"},
+        .fragment = gl::ShaderSource::File{"res/fragmentScreenShader.glsl"}
     }};
     
     auto const texture = gl::Texture{
@@ -162,8 +187,10 @@ int main()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                              
             triDim_mesh.draw();
         });
-
         
+        shaderScreen.bind();
+        shaderScreen.set_uniform("my_texture",render_target.color_texture(0));
+        screen_mesh.draw();
         
         
         
