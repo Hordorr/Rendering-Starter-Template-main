@@ -13,6 +13,7 @@ int main()
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE); // On peut configurer l'équation qui mélange deux couleurs, comme pour faire différents blend mode dans Photoshop. Cette équation-ci donne le blending "normal" entre pixels transparents.
     auto camera = gl::Camera{};
     gl::set_events_callbacks({camera.events_callbacks()});
+    
 
     auto const rectlangle_mesh = gl::Mesh{{
         .vertex_buffers = {{
@@ -106,7 +107,39 @@ int main()
         .wrap_x               = gl::Wrap::Repeat,   // Quelle couleur va-t-on lire si jamais on essaye de lire en dehors de la texture ?
         .wrap_y               = gl::Wrap::Repeat,   // Idem, mais sur l'axe Y. En général on met le même wrap mode sur les deux axes.
     }
-};
+    };
+
+    auto render_target = gl::RenderTarget{gl::RenderTarget_Descriptor{
+    .width          = gl::framebuffer_width_in_pixels(),
+    .height         = gl::framebuffer_height_in_pixels(),
+    .color_textures = {
+        gl::ColorAttachment_Descriptor{
+            .format  = gl::InternalFormat_Color::RGBA8,
+            .options = {
+                .minification_filter  = gl::Filter::NearestNeighbour, // On va toujours afficher la texture à la taille de l'écran,
+                .magnification_filter = gl::Filter::NearestNeighbour, // donc les filtres n'auront pas d'effet. Tant qu'à faire on choisit le moins coûteux.
+                .wrap_x               = gl::Wrap::ClampToEdge,
+                .wrap_y               = gl::Wrap::ClampToEdge,
+            },
+        },
+    },
+    .depth_stencil_texture = gl::DepthStencilAttachment_Descriptor{
+        .format  = gl::InternalFormat_DepthStencil::Depth32F,
+        .options = {
+            .minification_filter  = gl::Filter::NearestNeighbour,
+            .magnification_filter = gl::Filter::NearestNeighbour,
+            .wrap_x               = gl::Wrap::ClampToEdge,
+            .wrap_y               = gl::Wrap::ClampToEdge,
+        },
+    },
+    }};
+    gl::set_events_callbacks({
+        camera.events_callbacks(),
+        {.on_framebuffer_resized = [&](gl::FramebufferResizedEvent const& e) {
+            if(e.width_in_pixels != 0 && e.height_in_pixels != 0) // OpenGL crash si on tente de faire une render target avec une taille de 0
+                render_target.resize(e.width_in_pixels, e.height_in_pixels);
+        }},
+        });
     
 
     while (gl::window_is_open())
@@ -119,15 +152,19 @@ int main()
         glm::mat4 const translation = glm::translate(glm::mat4{1.f}, glm::vec3{0.f, 1.f, 0.f} /* déplacement */);    
         glm::mat4 const ModelMatrix = translation*rotation;
         glm::mat4 const model_view_projection_matrix = view_projection_matrix * ModelMatrix;
-
-
-        glClearColor(0.f,0.f,1.f,1.f);
-        shader.bind();
+        shader.bind(); 
         shader.set_uniform("my_texture",texture);
         shader.set_uniform("view_projection_matrix",model_view_projection_matrix);
-        shader.set_uniform("alpha",1.f);        
-        triDim_mesh.draw();
-        //CamOrtho
+        shader.set_uniform("alpha",1.f); 
+        
+        render_target.render([&]() {
+            glClearColor(1.f, 0.f, 0.f, 1.f); // Dessine du rouge, non pas à l'écran, mais sur notre render target
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                              
+            triDim_mesh.draw();
+        });
+
+        
+        
         
         
         
